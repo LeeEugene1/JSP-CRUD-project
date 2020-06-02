@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 2020.02.18. (5)
+		log4j.properties, SqlMapConfig.Properties, SqlMapConfig.xml
+		MemberVO.java --> 
+<sqlMap namespace="member">
+	<typeAlias alias="memberVO" type="kr.or.ddit.vo.MemberVO"/>
+	<typeAlias alias="statisticsVO" type="kr.or.ddit.vo.StatisticsVO"/>
+	
+	<resultMap class="memberVO" id="memberResultMap">
+		<result property="mem_id" column="mem_id"/>
+		<result property="mem_pass" column="mem_pass"/>
+		<result property="mem_name" column="mem_name"/>
+		<result property="mem_regno1" column="mem_regno1"/>
+		<result property="mem_regno2" column="mem_regno2"/>
+		<result property="mem_bir" column="mem_bir"/>
+		<result property="mem_zip" column="mem_zip"/>
+		<result property="mem_add1" column="mem_add1"/>
+		<result property="mem_add2" column="mem_add2"/>
+		<result property="mem_hp" column="mem_hp"/>
+		<result property="mem_mail" column="mem_mail"/>
+		<result property="mem_mileage" column="mem_mileage"/>
+		<result property="mem_delete" column="mem_delete"/>
+		<result property="mem_img" column="mem_img"/>
+	</resultMap>
+	
+	<sql id="selectAll">
+		SELECT *
+		  FROM MEMBER
+		 WHERE MEM_DELETE = 'n'
+	</sql>
+	
+	<sql id="searchCondition">
+		<dynamic prepend="and">
+	   		<isNotEmpty property="search_keyword">
+   				<isEqual property="search_keycode" compareValue="search_name">
+   					   mem_name like '%'||#search_keyword#||'%'
+   				</isEqual>
+   				<isEqual property="search_keycode" compareValue="search_id">
+   					   mem_id like '%'||#search_keyword#||'%'
+   				</isEqual>
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+	   		<isNotEmpty property="search_add1">
+   					   mem_add1 like '%'||#search_add1#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_add2">
+   					   mem_add2 like '%'||#search_add2#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+	   		<isNotEmpty property="search_hp1">
+   					   substr(mem_hp,0,3) like #search_hp1#
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_hp2">
+   					   substr(mem_hp,5,4) like '%'||#search_hp2#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_hp3">
+   					   substr(mem_hp,10,4) like '%'||#search_hp3#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_year">
+   					   substr(mem_regno1,0,2) like substr(#search_year#,3,2)
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_month">
+   					   substr(mem_regno1,3,2) like '%'||#search_month#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+		<dynamic prepend="and">
+   			<isNotEmpty property="search_day">
+   					   substr(mem_regno1,5,2) like '%'||#search_day#||'%'
+   			</isNotEmpty>
+	   	</dynamic>
+	</sql>
+	
+<!-- 	<select id="memberList" resultClass="memberVO"> -->
+<!-- 		select * from member -->
+<!-- 	</select> -->
+	
+	<select id="memberInfo" parameterClass="map" resultClass="memberVO">
+		<include refid="selectAll"></include>
+		AND MEM_ID = #mem_id#
+		 <dynamic>
+		 	<isNotEmpty property="mem_pass" prepend="AND">
+			   MEM_PASS = #mem_pass#
+		 	</isNotEmpty>
+		 </dynamic>
+	</select>
+	
+
+<!-- 	<select id="memberList" resultClass="memberVO"> -->
+<!-- 		select B.* -->
+<!--   		  from ( select rownum rnum, A.* -->
+<!--   		  		   from (<include refid="selectAll"/> -->
+<!--   		   				 <include refid="searchCondition"/> ) A ) B -->
+<!--         <![CDATA[ -->
+<!--           	 WHERE B.RNUM <= #startCount#  -->
+<!--         		   AND B.RNUM >= #endCount#  -->
+<!--           ]]>  -->
+<!--        		 ORDER BY rnum desc -->
+<!-- 	</select> -->
+
+	<select id="memberList" resultClass="memberVO" >
+<!-- 		select B.* -->
+<!--   		  from (  -->
+  		  select rownum rnum, A.*
+  		  		   from (<include refid="selectAll"/>
+  		   				 <include refid="searchCondition"/> ) A 
+<!--         <![CDATA[ -->
+<!--          	 WHERE B.RNUM <= #startCount#  -->
+<!--        		   AND B.RNUM >= #endCount#  -->
+<!--          ]]>  -->
+<!--        		 ORDER BY rnum desc -->
+	</select>
+
+	
+	<update id="updateMem" parameterClass="memberVO">
+		update member
+		   set mem_pass = #mem_pass#
+		   	  ,mem_name = #mem_name#
+		   	  ,mem_regno1 = #mem_regno1#
+		   	  ,mem_regno2 = #mem_regno2#
+		   	  ,mem_bir = #mem_bir#
+		   	  ,mem_zip = #mem_zip#
+		   	  ,mem_add1 = #mem_add1#
+		   	  ,mem_add2 = #mem_add2#
+		   	  ,mem_hp = #mem_hp#
+		   	  ,mem_mail = #mem_mail#
+		where mem_id = #mem_id#
+	</update>
+	
+	<insert id="insertMem" parameterClass="memberVO">
+		insert into member(mem_id, mem_pass, mem_name, mem_regno1, mem_regno2, mem_bir, mem_zip, 
+							mem_add1, mem_add2, mem_hp, mem_mail, mem_mileage, mem_img, mem_join)
+					values(#mem_id#, #mem_pass#, #mem_name#, #mem_regno1#, #mem_regno2#, #mem_bir#, #mem_zip#, 
+							#mem_add1#, #mem_add2#, #mem_hp#, #mem_mail#, #mem_mileage#, #mem_img#, #mem_join#)
+	</insert>
+	
+	<update id="deleteMem" parameterClass="memberVO">
+		update member
+		   set mem_delete_check = 'y'
+		   		,mem_dropout = #mem_dropout#
+		 where mem_id = #mem_id#
+	</update>
+	
+	<update id="OutMem" parameterClass="map">
+		update member
+		   set mem_delete = 'y'
+		 where mem_id = #mem_id#
+	</update>
+	
+	<select id="totalCount" parameterClass="map" resultClass="string">
+		select count(mem_id)
+		  from member
+<!-- 		 where mem_delete = 'n' -->
+<!-- 		 <include refid="searchCondition"/> -->
+	</select>
+	
+	
+<!-- 	<select id="genderRate" resultClass="String"> -->
+<!-- 		select count(*) as "count" -->
+<!-- 			   ,decode(substr(mem_regno2, 0, 1), '1', 'male', '2', 'female', 'etc') as gender -->
+<!-- 		  from member -->
+<!-- 		 where mem_delete = 'n' -->
+<!-- 		 group by decode(substr(mem_regno2, 0, 1), '1', 'male', '2', 'female', 'etc') -->
+<!-- 	</select> -->
+
+	<select id="genderRate" resultClass="statisticsVO">
+		select count(*) as "genderCount"
+			   ,decode(substr(mem_regno2, 0, 1), '1', 'male', '2', 'female') as gender
+		  from member
+		 where mem_delete = 'n'
+		 group by decode(substr(mem_regno2, 0, 1), '1', 'male', '2', 'female')
+	</select>
+	
+	<select id="ageRate" resultClass="statisticsVO">
+		select count(*) as "ageCount"
+      		  ,decode(substr(121-to_number((substr(mem_regno1,0,2))), 0, 1), '1', '10대', '2', '20대', '3', '30대', '4', '40대', '5', '50대', '6', '60대', 'etc' ) as age
+  		  from member
+ 		 where mem_delete = 'n'
+  		 group by decode(substr(121-to_number((substr(mem_regno1,0,2))), 0, 1), '1', '10대', '2', '20대', '3', '30대', '4', '40대', '5', '50대', '6', '60대', 'etc' )
+	</select>
+	
+<!-- 	<select id="boardRate" resultClass="statisticsVO"> -->
+<!-- 		select * -->
+<!--   		  from ( select count(*) from board where bo_delete = 'n' -->
+<!--          		 union all -->
+<!--          		 select count(*) from imageboard where im_delete = 'n' -->
+<!--          		 union all -->
+<!--          		 select count(*) from notice where no_delete = 'n' -->
+<!--          		 union all -->
+<!--          		 select count(*) from qanda where qa_delete = 'n' -->
+<!--          		 union all -->
+<!--          		 select count(*) from reference where re_delete = 'n' ) -->
+<!-- 	</select> -->
+
+	<select id="boardRate" resultClass="statisticsVO">
+		select count(*) as board from board where bo_delete = 'n'
+	</select>
+	<select id="imageBoardRate" resultClass="statisticsVO">
+		select count(*) as image from imageboard where im_delete = 'n'
+	</select>
+	<select id="noticeRate" resultClass="statisticsVO">
+		select count(*) as notice from notice where no_delete = 'n'
+	</select>
+	<select id="qandaRate" resultClass="statisticsVO">
+		select count(*) as qanda from qanda where qa_delete = 'n'
+	</select>
+	<select id="referenceRate" resultClass="statisticsVO">
+		 select count(*) as reference from reference where re_delete = 'n'
+	</select>
+	
+	<select id="dropoutRate" resultClass="statisticsVO">
+		select mem_dropout, count(mem_id) as dropoutCount
+		  from member
+		 group by mem_dropout
+	</select>
+	
+	<select id="joinRate" resultClass="statisticsVO">
+		select mem_join, count(mem_id) as joinCount
+		  from member
+		 group by mem_join
+	</select>
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+

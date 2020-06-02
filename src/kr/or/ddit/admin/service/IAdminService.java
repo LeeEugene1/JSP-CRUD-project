@@ -1,0 +1,9 @@
+package kr.or.ddit.admin.service;
+
+import java.util.Map;
+
+import kr.or.ddit.vo.AdminVO;
+
+public interface IAdminService {
+	public AdminVO adminInfo(Map<String, String> params);
+}

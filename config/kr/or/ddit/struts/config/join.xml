@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	 <package name="joinPKG" extends="commonPKG" namespace="/admin">
+	 	<action name="loginForm">
+	 		<interceptor-ref name="CryptoInterceptor"></interceptor-ref>
+	 		<result>/WEB-INF/views/admin/loginForm.jsp</result>
+	 	</action>
+	 	<action name="loginCheck" class="kr.or.ddit.admin.join.controller.loginCheckAction">
+			<result name="loginForm" type="redirect">
+				<![CDATA[/admin/loginForm.do?message=${message}]]>
+			</result>
+			<result type="chain">
+				<param name="namespace">/admin/member</param>
+				<param name="actionName">memberList</param>
+			</result>
+	 	</action>
+	 	<action name="Logout" class="kr.or.ddit.admin.join.controller.logoutAction">
+	  		<result name="success" type="redirect">
+					<![CDATA[/admin/loginForm.do?message=${message}]]>
+			</result>
+		</action>
+	 </package>
+	 
+	 <package name="joinPKG2" extends="commonPKG" namespace="/user">
+	 	<action name="main">
+	 		<interceptor-ref name="CryptoInterceptor"></interceptor-ref>
+	 		<result>/WEB-INF/views/user/main.jsp</result>
+	 	</action>
+	 	<action name="loginCheck" class="kr.or.ddit.user.join.controller.loginCheckAction">
+			<result name="main" type="redirect">
+				<![CDATA[/user/main.do?message=${message}]]>
+			</result>
+			<result type="chain">
+				<param name="namespace">/user/notice</param>
+				<param name="actionName">noticeList</param>
+			</result>
+		</action>
+		<action name="logout" class="kr.or.ddit.user.join.controller.logoutAction">
+  		<result name="success" type="redirect">
+				<![CDATA[/user/main.do?message=${message}]]>
+		</result>
+  	
+	 	</action>
+	 </package>
+	 
+</struts>

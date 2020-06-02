@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 2020.02.18. (5)
+		log4j.properties, SqlMapConfig.Properties, SqlMapConfig.xml
+		MemberVO.java --> 
+<sqlMap namespace="admin">
+	<typeAlias alias="adminVO" type="kr.or.ddit.vo.AdminVO"/>
+	
+<!-- 	<select id="adminInfo" parameterClass="map" resultClass="adminVO"> -->
+<!-- 		select * from admin -->
+<!-- 	</select> -->
+
+	<select id="adminInfo" parameterClass="map" resultClass="adminVO">
+		select * 
+		  from admin
+		 where admin_id = #admin_id# and admin_pass = #admin_pass#
+		
+	</select>
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+

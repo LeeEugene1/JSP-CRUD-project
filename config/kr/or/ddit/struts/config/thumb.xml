@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="thumbPKG" extends="struts-default,tiles-default" namespace="/admin/thumb">
+		<action name="thumbList" class="kr.or.ddit.admin.thumb.controller.ThumbListAction">
+	 		<result type="tiles">admin/thumb/thumbList</result>
+	 	</action>
+		<action name="thumbView" class="kr.or.ddit.admin.thumb.controller.ThumbViewAction">
+	 		<result type="tiles">admin/thumb/thumbView</result>
+	 	</action>
+		<action name="deleteThumb" class="kr.or.ddit.admin.thumb.controller.DeleteThumbAction" >
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/thumb/thumbList.do?message=${message}]]>
+			</result>
+	 	</action>
+	 	
+	 	<action name="thumbUpdateView" class="kr.or.ddit.admin.thumb.controller.ThumbUpdateViewAction">
+			<result type="tiles">admin/thumb/thumbUpdate</result>
+		</action>
+		
+		<action name="thumbUpdate" class="kr.or.ddit.admin.thumb.controller.UpdateThumbAction" >
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/thumb/thumbList.do?message=${message}]]>
+			</result>
+		</action>
+		
+		<action name="thumbForm">
+			<result type="tiles">admin/thumb/thumbForm</result>
+		</action>
+		
+		<action name="thumbInsert" class="kr.or.ddit.admin.thumb.controller.InsertThumbAction" method="insertThumbInfo">
+			<interceptor-ref name="fileUpload"></interceptor-ref>
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/thumb/thumbList.do?message=${message}]]>
+			</result>
+		</action>
+	</package>	 
+	
+	<package name="thumbPKG2" extends="struts-default,tiles-default" namespace="/user/thumb">
+		<action name="thumbList" class="kr.or.ddit.user.thumb.controller.ThumbListAction">
+	 		<result type="tiles">user/thumb/thumbList</result>
+	 	</action>
+	 	<action name="thumbView" class="kr.or.ddit.user.thumb.controller.ThumbViewAction">
+	 		<result type="tiles">user/thumb/thumbView</result>
+	 	</action>
+		<action name="deleteThumb" class="kr.or.ddit.user.thumb.controller.DeleteThumbAction">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/thumb/thumbList.do?message=${message}]]>
+			</result>
+	 	</action>
+	 	<action name="thumbViewUpdate" class="kr.or.ddit.user.thumb.controller.ThumbUpdateViewAction">
+			<result type="tiles">user/thumb/thumbViewUpdate</result>
+		</action>
+		
+		<action name="thumbUpdate" class="kr.or.ddit.user.thumb.controller.UpdateThumbAction">
+			<interceptor-ref name="fileUpload"></interceptor-ref>
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/thumb/thumbList.do?message=${message}]]>
+			</result>
+		</action>
+		
+		<action name="thumbForm">
+			<result type="tiles">user/thumb/thumbForm</result>
+		</action>
+		
+		<action name="thumbInsert" class="kr.or.ddit.user.thumb.controller.InsertThumbAction" method="insertThumbInfo">
+			<interceptor-ref name="fileUpload"></interceptor-ref>
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/thumb/thumbList.do?message=${message}]]>
+			</result>
+		</action>
+	</package>	 
+</struts>

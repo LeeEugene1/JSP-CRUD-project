@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="reference">
+	<typeAlias alias="referenceVO" type="kr.or.ddit.vo.ReferenceVO"/>
+	
+    <resultMap id="referenceResultMap" class="referenceVO" >
+		<result property="re_no" column="re_no"/>
+		<result property="re_title" column="re_title"/>
+		<result property="re_writer" column="re_writer"/>
+		<result property="bo_ip" column="bo_ip"/>
+		<result property="re_content" column="re_content"/>
+		<result property="re_hit" column="re_hit"/>
+		<result property="re_reg_date" column="re_reg_date"/>
+		<result property="re_delete" column="re_delete"/>
+		<result property="re_group" column="re_group"/>
+		<result property="re_seq" column="re_seq"/>
+		<result property="re_depth" column="re_depth"/>
+		<result property="items" column="re_no" select="fileitemReference.fileitemReferenceList"/>
+	</resultMap>
+	
+	<sql id="selectAll">
+		SELECT *
+		  FROM REFERENCE
+		 WHERE RE_DELETE = 'n'
+	</sql>
+	
+	<sql id="searchCondition">
+		<dynamic prepend="and">
+		   			<isNotEmpty property="search_keyword">
+		   				<isEqual property="search_keycode" compareValue="TOTAL" open="(" close=")">
+		   					   re_title like '%'||#search_keyword#||'%'
+		   					or re_content like '%'||#search_keyword#||'%'
+		   					or re_writer like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="TITLE">
+		   					   re_title like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="CONTENT">
+		   					   re_content like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="WRITER">
+		   					   re_writer like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   			</isNotEmpty>
+		   		</dynamic>
+	</sql>
+	
+	<select id="referenceInfo" parameterClass="map" resultMap="referenceResultMap">
+		<include refid="selectAll"/>
+		AND RE_NO = #re_no#		
+		
+	</select>
+
+	<select id="referenceList" resultClass="referenceVO">
+	SELECT B.*
+	  FROM (SELECT rownum rnum, A.*
+  		      FROM (<include refid="selectAll"/>
+  		   		    <include refid="searchCondition"/>
+         		    ORDER BY re_group, re_seq desc) A ) B
+	 <![CDATA[
+     WHERE B.RNUM <= #startCount#
+       AND B.RNUM >= #endCount#
+     ]]>
+  		   ORDER BY rnum desc
+	</select>	
+
+	<insert id="insertReference" parameterClass="referenceVO">
+		<selectKey keyProperty="re_no">
+			SELECT REFERENCE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into REFERENCE(re_no, re_title, re_writer, re_content, re_reg_date, re_group)
+					values(#re_no#, #re_title#, #re_writer#, #re_content#, to_date(sysdate, 'YYYY-MM-DD'), #re_no#)
+	</insert>
+	
+	<update id="updateReference" parameterClass="referenceVO">
+		update reference
+		   set re_title = #re_title#
+		      ,re_content = #re_content#
+		      ,re_reg_date = to_date(sysdate, 'YYYY-MM-DD')
+		where re_no = #re_no#
+	</update>
+	
+	<update id="deleteReference" parameterClass="map">
+		update reference
+		   set re_delete = 'y'
+		 where re_no = #re_no#
+	</update>
+	
+	<select id="incrementSEQ" parameterClass="referenceVO" resultClass="string">
+		SELECT MAX(RE_SEQ) + 1
+		  FROM reference
+		 WHERE re_group = #re_group#
+	</select>
+	
+	<update id="updateSEQ" parameterClass="referenceVO">
+		UPDATE reference
+		   SET re_seq = re_seq + 1
+		 WHERE re_group = #re_group#
+		   AND re_seq > #re_seq#
+	</update>
+	
+	<insert id="insertReferenceVOReply" parameterClass="referenceVO">
+		<selectKey keyProperty="re_no">
+			SELECT REFERENCE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into REFERENCE(re_no, re_title, re_writer, re_content, re_reg_date, re_group, re_seq, re_depth)
+					values(#re_no#, #re_title#, #re_writer#, #re_content#, to_date(sysdate, 'YYYY-MM-DD'), 
+						   #re_group#, #re_seq#, #re_depth#)
+	</insert>
+	
+	<select id="totalCount" parameterClass="map" resultClass="string">
+		SELECT COUNT(RE_NO)
+		  FROM REFERENCE
+		 WHERE RE_DELETE = 'n'
+		 <include refid="searchCondition"/>
+	</select>
+	
+	<update id="updateHIT" parameterClass="map">
+		update reference
+		   set re_hit = re_hit + 1
+		 where re_no = #re_no#
+	</update>
+   
+</sqlMap>

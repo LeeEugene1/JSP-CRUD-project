@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="imageboard">
+   <typeAlias alias="qandaVO" type="kr.or.ddit.vo.QandaVO"/>
+   
+   <resultMap class="qandaVO" id="qandaResultMap">
+   		<result property="qa_no" column="qa_no"/>
+		<result property="qa_title" column="qa_title"/>
+		<result property="qa_writer" column="qa_writer"/>
+		<result property="qa_content" column="qa_content"/>
+		<result property="qa_hit" column="qa_hit"/>
+		<result property="qa_reg_date" column="qa_reg_date"/>
+		<result property="qa_delete" column="qa_delete"/>
+		<result property="qa_group" column="qa_group"/>
+		<result property="qa_seq" column="qa_seq"/>
+		<result property="qa_depth" column="qa_depth"/>
+   </resultMap>
+   
+   <sql id="selectAll"> SELECT * FROM QANDA WHERE QA_DELETE = 'n' </sql>
+   
+   <sql id="searchCondition"> 
+	   <dynamic prepend="AND">
+	   	   <isNotEmpty property="search_keyword">
+				<isEqual property="search_keycode" compareValue="TOTAL" open="(" close=")">
+					    QA_TITLE LIKE '%'||#search_keyword#||'%'
+						OR QA_CONTENT LIKE '%'||#search_keyword#||'%'
+						OR QA_WRITER LIKE '%'||#search_keyword#||'%'						
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="TITLE">
+					   QA_TITLE LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="CONTENT">
+					   QA_CONTENT LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="WRITER">
+					   QA_WRITER LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+	   	   </isNotEmpty>
+	   </dynamic>
+   </sql>
+
+<!--    <select id="qandaList" resultClass="qandaVO" parameterClass="map"> -->
+<!--    	SELECT B.* -->
+<!--    	  FROM (SELECT ROWNUM rnum, A.* -->
+<!--   		FROM (<include refid="selectAll"/> -->
+<!--  			   <include refid="searchCondition"/>  -->
+<!-- 	          ORDER BY qa_group, qa_seq desc) A ) B -->
+<!--  	    <![CDATA[  -->
+<!--    	    WHERE B.RNUM <= #startCount#  -->
+<!--    	      AND B.RNUM >= #endCount#  -->
+<!--   	    ]]>  -->
+<!-- 		ORDER BY RNUM DESC -->
+<!--    </select> -->
+
+    <select id="qandaList" resultClass="qandaVO" parameterClass="map">
+   			SELECT B.*
+   			FROM (
+	   			SELECT ROWNUM RNUM, A.*
+	   			FROM (  
+	   			<include refid="selectAll"/>
+	    		<include refid="searchCondition"/>
+				ORDER BY QA_GROUP, QA_SEQ DESC ) A ) B
+			<![CDATA[ 
+    	    WHERE B.RNUM <= #startCount# 
+    	      AND B.RNUM >= #endCount#  
+   	 	  	]]> 
+			ORDER BY RNUM DESC
+   	</select>
+   	
+   
+   <select id="qandaInfo" parameterClass="map" resultMap="qandaResultMap">
+		<include refid="selectAll"/>
+		   AND QA_NO = #qa_no#
+	</select>
+	
+<!-- 	<update id="updateHIT" parameterClass="map"> -->
+<!-- 		UPDATE QANDA -->
+<!-- 		   SET QA_HIT = QA_HIT + 1 -->
+<!-- 		 WHERE QA_NO = #qa_no# -->
+<!-- 	</update> -->
+	
+<!-- 	<insert id="insertQanda" parameterClass="qandaVO"> -->
+<!-- 		<selectKey keyProperty="qa_no" resultClass="String"> -->
+<!-- 			SELECT QANDA_SEQ.NEXTVAL FROM DUAL -->
+<!-- 		</selectKey> -->
+<!-- 		INSERT INTO QANDA(QA_NO -->
+<!-- 							,QA_TITLE -->
+<!-- 							,QA_WRITER -->
+<!-- 							,QA_CONTENT -->
+<!-- 							,QA_GROUP -->
+<!-- 							) -->
+<!-- 					VALUES(#qa_no# -->
+<!-- 							,#qa_title# -->
+<!-- 							,#qa_writer# -->
+<!-- 							,#qa_content# -->
+<!-- 							,#qa_group# -->
+<!-- 							) -->
+<!-- 	</insert> -->
+	
+<!-- 	<update id="updateQanda" parameterClass="qandaVO"> -->
+<!-- 		UPDATE QANDA -->
+<!-- 		   SET QA_TITLE   =  #qa_title#    -->
+<!-- 			,QA_CONTENT   =  #qa_content# -->
+<!-- 		 WHERE QA_NO = #qa_no# -->
+<!-- 	</update> -->
+	
+	<update id="deleteQanda" parameterClass="map">
+		UPDATE QANDA
+		   SET QA_DELETE = 'y' 
+		 WHERE QA_NO = #qa_no#
+	</update>
+	
+<!-- 	<select id="incrementSEQ" parameterClass="boardVO" resultClass="string"> -->
+<!-- 		SELECT MAX(QA_SEQ) + 1 FROM QANDA WHERE QA_GROUP = #qa_group# -->
+<!-- 	</select> -->
+	
+<!-- 	<update id="updateSEQ" parameterClass="qandaVO"> -->
+<!-- 		UPDATE QANDA -->
+<!-- 		   SET QA_SEQ = qa_SEQ + 1 -->
+<!-- 		 WHERE QA_GROUP = #qa_group# -->
+<!-- 		   AND QA_SEQ > #qa_seq# -->
+<!-- 	</update> -->
+	
+	<select id="totalCount" parameterClass="map" resultClass="string">
+		SELECT COUNT(QA_NO)
+		  FROM QANDA
+		 WHERE QA_DELETE = 'n'
+		  <include refid="searchCondition"/>
+	</select>
+   
+</sqlMap>

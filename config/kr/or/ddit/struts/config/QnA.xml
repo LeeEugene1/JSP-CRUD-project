@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="QnAPKG" extends="struts-default,tiles-default" namespace="/admin/qanda">
+		<action name="qandaList" class="kr.or.ddit.admin.qanda.controller.QandaListAction">
+	 		<result type="tiles">admin/qanda/qandaList</result>
+	 	</action>
+		<action name="qandaView" class="kr.or.ddit.admin.qanda.controller.QandaViewAction">
+	 		<result type="tiles">admin/qanda/qandaView</result>
+	 	</action>
+		<action name="deleteQanda" class="kr.or.ddit.admin.qanda.controller.DeleteQandaAction" method="deleteQandaInfo">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/qanda/qandaList.do?message=${message}]]>
+			</result>
+	 	</action>
+	 	
+	 	<action name="qandaUpdateView" class="kr.or.ddit.admin.qanda.controller.QandaUpdateViewAction">
+			<result type="tiles">admin/qanda/qandaUpdate</result>
+		</action>
+		
+		<action name="qandaUpdate" class="kr.or.ddit.admin.qanda.controller.UpdateQandaAction">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirectAction">
+				<param name="namespace">/admin/qanda</param>
+				<param name="actionName">qandaList</param>
+			</result>
+		</action>
+		
+		<action name="qandaForm">
+			<result type="tiles">admin/qanda/qandaForm</result>
+		</action>
+		
+		<action name="qandaInsert" class="kr.or.ddit.admin.qanda.controller.InsertQandaAction" method="insertQandaInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/qanda/qandaList.do?message=${message}]]>
+			</result>
+		</action>
+	</package>	 
+	
+	<package name="QnAPKG2" extends="struts-default,tiles-default" namespace="/user/qanda">
+		<action name="qandaList" class="kr.or.ddit.user.qanda.controller.QandaListAction">
+	 		<result type="tiles">user/qanda/qandaList</result>
+	 	</action>
+	 	<action name="qandaView" class="kr.or.ddit.user.qanda.controller.QandaViewAction">
+	 		<result type="tiles">user/qanda/qandaView</result>
+	 	</action>
+		<action name="deleteQanda" class="kr.or.ddit.user.qanda.controller.DeleteQandaAction" method="deleteQandaInfo">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/qanda/qandaList.do?message=${message}]]>
+			</result>
+	 	</action>
+	 	<action name="qandaViewUpdate" class="kr.or.ddit.user.qanda.controller.QandaUpdateViewAction">
+			<result type="tiles">user/qanda/qandaViewUpdate</result>
+		</action>
+		
+		<action name="qandaUpdate" class="kr.or.ddit.user.qanda.controller.UpdateQandaAction">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirectAction">
+				<param name="namespace">/user/qanda</param>
+				<param name="actionName">qandaList</param>
+			</result>
+		</action>
+		
+		<action name="qandaForm">
+			<result type="tiles">user/qanda/qandaForm</result>
+		</action>
+		
+		<action name="qandaInsert" class="kr.or.ddit.user.qanda.controller.InsertQandaAction" method="insertQandaInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/qanda/qandaList.do?message=${message}]]>
+			</result>
+		</action>
+	</package>	 
+</struts>

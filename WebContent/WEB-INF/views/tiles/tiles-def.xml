@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+   
+   <definition name="user/main" template="/WEB-INF/views/user/main.jsp">
+      <put-attribute name="title" value="당근나라"></put-attribute>
+      <put-attribute name="header" value="/WEB-INF/views/user/layout/header.jsp"></put-attribute>
+      <put-attribute name="left" value="/WEB-INF/views/user/layout/left.jsp"></put-attribute>
+      <put-attribute name="footer" value="/WEB-INF/views/user/layout/footer.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="user/member/*" extends="user/main">
+      <put-attribute name="content_header" value="/WEB-INF/views/user/member/content_header.jsp"></put-attribute>
+   		<put-attribute name="content" value="/WEB-INF/views/user/member/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/main" template="/WEB-INF/views/admin/main.jsp">
+   		<put-attribute name="title" value="당근나라 관리자"></put-attribute>
+   		<put-attribute name="header" value="/WEB-INF/views/admin/inc/header.jsp"></put-attribute>
+   		<put-attribute name="footer" value="/WEB-INF/views/admin/inc/footer.jsp"></put-attribute>
+   </definition>
+
+   <definition name="admin/reference/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/reference/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/*" template="/WEB-INF/views/admin/loginForm.jsp">
+   </definition>
+   
+   <definition name="admin/member/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/member/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="user/freeboard/*" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/freeboard/{1}.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderFreeboard.jsp"></put-attribute>
+   </definition>
+   <definition name="user/freeboard/freeboardView" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/freeboard/freeboardView.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderFreeboardSub.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="user/qanda/*" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/qanda/{1}.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderQanda.jsp"></put-attribute>
+   </definition>     
+   <definition name="user/qanda/qandaView" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/qanda/qandaView.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderQandaSub.jsp"></put-attribute>
+   </definition> 
+   
+   <definition name="user/notice/*" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/notice/{1}.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderNotice.jsp"></put-attribute>
+   </definition>   
+   <definition name="user/notice/noticeView" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/notice/noticeView.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderNoticeSub.jsp"></put-attribute>
+   </definition>   
+   
+   <definition name="user/member/zipcodeSearchForm" template="/WEB-INF/views/user/member/zipcodeSearchForm.jsp">
+   </definition>
+
+   <definition name="user/member/idPicFileuploadForm" template="/WEB-INF/views/user/member/idPicFileuploadForm.jsp">
+   </definition>
+
+   
+   <definition name="user/reference/*" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/reference/{1}.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderReference.jsp"></put-attribute>
+<!--       <put-attribute name="header" value="/WEB-INF/views/user/layout/header.jsp"></put-attribute> -->
+   </definition>   
+   <definition name="user/reference/referenceView" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/reference/referenceView.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderReferenceSub.jsp"></put-attribute>
+<!--       <put-attribute name="header" value="/WEB-INF/views/user/layout/header.jsp"></put-attribute> -->
+   </definition>     
+   
+   <definition name="admin/chart/*" extends="admin/main">
+      <put-attribute name="content" value="/WEB-INF/views/admin/chart/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="user/imageboard/*" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/imageboard/{1}.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderImageboard.jsp"></put-attribute>
+   </definition>
+   <definition name="user/imageboard/imageboardView" extends="user/main">
+      <put-attribute name="content" value="/WEB-INF/views/user/imageboard/imageboardView.jsp"></put-attribute>
+      <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderImageboardSub.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/qanda/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/qanda/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/freeboard/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/freeboard/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/notice/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/notice/{1}.jsp"></put-attribute>
+   </definition>
+   
+   <definition name="admin/thumb/*" extends="admin/main">
+   		<put-attribute name="content" value="/WEB-INF/views/admin/thumb/{1}.jsp"></put-attribute>
+   </definition>
+   <definition name="user/thumb/*" extends="user/main">
+   		<put-attribute name="content" value="/WEB-INF/views/user/thumb/{1}.jsp"></put-attribute>
+        <put-attribute name="content_header" value="/WEB-INF/views/user/layout/contentHeaderThumb.jsp"></put-attribute>
+   </definition>
+   
+</tiles-definitions>

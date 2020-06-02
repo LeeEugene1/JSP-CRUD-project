@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="chartPKG" extends="struts-default,tiles-default" namespace="/admin/chart">
+		<action name="genderChart" class="kr.or.ddit.admin.chart.controller.GenderChartAction">
+			<result type="tiles">admin/chart/genderChart</result>
+		</action>
+		<action name="ageChart" class="kr.or.ddit.admin.chart.controller.AgeChartAction">
+			<result type="tiles">admin/chart/ageChart</result>
+		</action>
+		<action name="boardChart" class="kr.or.ddit.admin.chart.controller.BoardChartAction">
+			<result type="tiles">admin/chart/boardChart</result>
+		</action>
+		<action name="dropoutChart" class="kr.or.ddit.admin.chart.controller.DropoutChartAction">
+			<result type="tiles">admin/chart/dropoutChart</result>
+		</action>
+		<action name="joinChart" class="kr.or.ddit.admin.chart.controller.JoinChartAction">
+			<result type="tiles">admin/chart/joinChart</result>
+		</action>
+	</package>
+</struts>

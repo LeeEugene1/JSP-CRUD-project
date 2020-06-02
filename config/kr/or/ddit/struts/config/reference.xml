@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	
+	<package name="referencePKG" extends="struts-default,tiles-default" namespace="/admin/reference">
+	
+		<action name="referenceList" class="kr.or.ddit.admin.reference.controller.ReferenceListAction">
+			<result type="tiles">admin/reference/referenceList</result>		
+		</action>
+		
+		<action name="referenceView" class="kr.or.ddit.admin.reference.controller.ReferenceViewAction">
+			<result type="tiles">admin/reference/referenceView</result>
+		</action>
+		
+		<action name="referenceUpdateView" class="kr.or.ddit.admin.reference.controller.ReferenceUpdateViewAction">
+			<result type="tiles">admin/reference/referenceUpdate</result>
+		</action>
+		
+		<action name="updateReference" class="kr.or.ddit.admin.reference.controller.UpdateReferenceAction">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirectAction">
+				<param name="namespace">/admin/reference</param>
+				<param name="actionName">referenceList</param>
+			</result>
+		</action>
+		
+		<action name="deleteReference" class="kr.or.ddit.admin.reference.controller.DeleteReferenceAction" method="deleteReferenceInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/reference/referenceList.do?message=${message}]]>
+			</result>
+		</action>
+		
+		<action name="fileDownload" class="kr.or.ddit.admin.reference.controller.FileDownloadAction">
+			<result type="stream">
+				<param name="contentType">binary/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">${contentDisposition}</param>
+				<param name="contentLength">${contentLength}</param>
+				<param name="buffersize">4096</param>
+			</result>
+		</action>
+		
+	</package>
+	
+	<package name="referenceUserPKG" extends="struts-default,tiles-default" namespace="/user/reference">
+	
+		<action name="referenceList" class="kr.or.ddit.user.reference.controller.ReferenceListAction">
+			<result type="tiles">user/reference/referenceList</result>		
+		</action>
+		
+		<action name="referenceView" class="kr.or.ddit.user.reference.controller.ReferenceViewAction">
+			<result type="tiles">user/reference/referenceView</result>
+		</action>
+		
+		<action name="referenceViewUpdate" class="kr.or.ddit.user.reference.controller.ReferenceViewUpdateAction">
+			<result type="tiles">user/reference/referenceViewUpdate</result>
+		</action>
+		
+		<action name="updateReference" class="kr.or.ddit.user.reference.controller.UpdateReferenceAction">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirectAction">
+				<param name="namespace">/user/reference</param>
+				<param name="actionName">referenceList</param>
+			</result>
+		</action>
+		
+		<action name="deleteReference" class="kr.or.ddit.user.reference.controller.DeleteReferenceAction" method="deleteReferenceInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/reference/referenceList.do?message=${message}]]>
+			</result>
+		</action>
+	
+		<action name="referenceForm">
+			<result type="tiles">user/reference/referenceForm</result>
+		</action>
+		
+		<action name="insertReference" class="kr.or.ddit.user.reference.controller.InsertReferenceAction" method="insertReferenceInfo">
+			<interceptor-ref name="fileUpload"></interceptor-ref>
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/reference/referenceList.do?message=${message}]]>
+			</result>
+		</action>
+		
+		<action name="referenceReplyForm">
+			<result type="tiles">user/reference/referenceReplyForm</result>
+		</action>
+		
+		<action name="insertReferenceReply" class="kr.or.ddit.user.reference.controller.InsertReferenceReplyAction" method="insertReferenceReplyInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/reference/referenceList.do?message=${message}]]>
+			</result>
+		</action>
+		
+		<action name="fileDownload" class="kr.or.ddit.user.reference.controller.FileDownloadAction">
+			<result type="stream">
+				<param name="contentType">binary/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">${contentDisposition}</param>
+				<param name="contentLength">${contentLength}</param>
+				<param name="buffersize">4096</param>
+			</result>
+		</action>
+		
+	</package>
+	
+</struts>

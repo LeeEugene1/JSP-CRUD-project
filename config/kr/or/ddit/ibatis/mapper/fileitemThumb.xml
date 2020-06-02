@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="fileitemThumb">
+	<typeAlias alias="fileitemImageboardVO" type="kr.or.ddit.vo.Fileitem_imageboardVO"/>
+	
+	<statement id="fileitemThumbList" resultClass="fileitemImageboardVO">
+		SELECT *
+		  FROM FILEITEM_IMAGEBOARD
+		 WHERE FILE_NO = #im_no#
+	</statement>
+	
+	<insert id="insertFileItemThumb" parameterClass="fileitemImageboardVO">
+		<selectKey keyProperty="file_seq">
+			SELECT THUMB_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO FILEITEM_IMAGEBOARD (FILE_SEQ, FILE_NO, FILE_NAME, FILE_SAVE_NAME, FILE_CONTENT_TYPE, FILE_SIZE) 
+					VALUES (#file_seq#, #file_no#, #file_name#, #file_save_name#, #file_content_type#, #file_size#)
+	</insert>
+	
+	<select id="fileitemThumbInfo" parameterClass="map" resultClass="fileitemImageboardVO">
+		SELECT *
+		  FROM FILEITEM_IMAGEBOARD
+		 WHERE FILE_SEQ = #fileSEQ#
+	</select>
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+

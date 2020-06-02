@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="notice">
+	<typeAlias alias="noticeVO" type="kr.or.ddit.vo.NoticeVO"/>
+	
+	   <resultMap id="noticeResultMap" class="noticeVO" >
+		<result property="no_no" column="no_no"/>
+		<result property="no_title" column="no_title"/>
+		<result property="no_writer" column="no_writer"/>
+		<result property="bo_ip" column="bo_ip"/>
+		<result property="no_content" column="no_content"/>
+		<result property="no_hit" column="no_hit"/>
+		<result property="no_reg_date" column="no_reg_date"/>
+		<result property="no_delete" column="no_delete"/>
+		<result property="no_group" column="no_group"/>
+		<result property="no_seq" column="no_seq"/>
+		<result property="no_depth" column="no_depth"/>
+		<result property="items" column="no_no" select="fileitemNotice.fileitemNoticeList"/>
+	</resultMap>
+	
+	<sql id="selectAll">
+		SELECT *
+		  FROM notice
+		 WHERE no_delete = 'n'
+	</sql>
+	
+	<sql id="searchCondition">
+		<dynamic prepend="and">
+		   			<isNotEmpty property="search_keyword">
+		   				<isEqual property="search_keycode" compareValue="TOTAL" open="(" close=")">
+		   					   no_title like '%'||#search_keyword#||'%'
+		   					or no_content like '%'||#search_keyword#||'%'
+		   					or no_writer like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="TITLE">
+		   					   no_title like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="CONTENT">
+		   					   no_content like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   				<isEqual property="search_keycode" compareValue="NICKNAME">
+		   					   no_writer like '%'||#search_keyword#||'%'
+		   				</isEqual>
+		   			</isNotEmpty>
+		</dynamic>
+	</sql>
+	
+	<select id="noticeInfo" parameterClass="map" resultMap="noticeResultMap">
+		<include refid="selectAll"/>
+		AND NO_NO = #no_no#		
+		
+	</select>
+
+	<select id="noticeList" resultClass="noticeVO" parameterClass="map">
+	SELECT B.*
+	  FROM (SELECT rownum rnum, A.*
+  		      FROM (<include refid="selectAll"/>
+  		   		    <include refid="searchCondition"/>
+         		    ORDER BY no_group, no_seq desc) A ) B
+	 <![CDATA[
+     WHERE B.RNUM <= #startCount#
+       AND B.RNUM >= #endCount#
+     ]]>
+  		   ORDER BY rnum desc
+	</select>	
+	
+	
+
+	<insert id="insertNotice" parameterClass="noticeVO">
+		<selectKey keyProperty="no_no">
+			SELECT NOTICE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into notice(no_no, no_title, no_writer, no_content, no_reg_date, no_group)
+					values(#no_no#, #no_title#, 'admin', #no_content#, to_date(sysdate, 'YYYY-MM-DD'), #no_no#)
+	</insert>
+	
+	<update id="updateNotice" parameterClass="noticeVO">
+		update notice
+		   set no_title = #no_title#
+		      ,no_content = #no_content#
+		      ,no_reg_date = to_date(sysdate, 'YYYY-MM-DD')
+		where no_no = #no_no#
+	</update>
+	
+	<update id="deleteNotice" parameterClass="map">
+		update NOTICE
+		   set NO_DELETE = 'y'
+		 where NO_NO = #no_no#
+	</update>
+	
+	<select id="incrementSEQ" parameterClass="noticeVO" resultClass="string">
+		SELECT MAX(NO_SEQ) + 1
+		  FROM NOTICE
+		 WHERE NO_GROUP = #no_group#
+	</select>
+	
+	<update id="updateSEQ" parameterClass="noticeVO">
+		UPDATE NOTICE
+		   SET NO_SEQ = NO_SEQ + 1
+		 WHERE NO_GROUP = #no_group#
+		   AND NO_SEQ > #no_seq#
+	</update>
+	
+	<insert id="insertNoticeVOReply" parameterClass="noticeVO">
+		<selectKey keyProperty="no_no">
+			SELECT NOTICE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into notice(no_no, no_title, no_writer, no_content, no_reg_date, no_group, no_seq, no_depth)
+					values(#no_no#, #no_title#, #no_writer#, #no_content#, to_date(sysdate, 'YYYY-MM-DD'), 
+						   #no_group#, #no_seq#, #no_depth#)
+	</insert>
+	
+	<select id="totalCount" parameterClass="map" resultClass="string">
+		SELECT COUNT(NO_NO)
+		  FROM NOTICE
+		 WHERE NO_DELETE = 'n'
+		 <include refid="searchCondition"/>
+	</select>
+	
+</sqlMap>

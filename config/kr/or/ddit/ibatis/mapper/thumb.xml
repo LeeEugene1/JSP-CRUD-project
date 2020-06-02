@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="thumb">
+	<typeAlias alias="thumbVO" type="kr.or.ddit.vo.ThumbVO" />
+
+	<resultMap class="thumbVO" id="thumbResultMap">
+		<result property="im_no" column="im_no" />
+		<result property="im_title" column="im_title" />
+		<result property="im_writer" column="im_writer" />
+		<result property="im_content" column="im_content" />
+		<result property="im_hit" column="im_hit" />
+		<result property="im_reg_date" column="im_reg_date" />
+		<result property="im_delete" column="im_delete" />
+		<result property="im_group" column="im_group" />
+		<result property="im_seq" column="im_seq" />
+		<result property="im_depth" column="im_depth" />
+		<result property="items" column="im_no" select="fileitemThumb.fileitemThumbList"/>
+	</resultMap>
+
+	<sql id="selectAll"> SELECT * FROM IMAGEBOARD WHERE IM_DELETE = 'n' </sql>
+
+	<sql id="searchCondition">
+		<dynamic prepend="AND">
+			<isNotEmpty property="search_keyword">
+				<isEqual property="search_keycode" compareValue="TOTAL"
+					open="(" close=")">
+					im_TITLE LIKE '%'||#search_keyword#||'%'
+					OR
+					im_CONTENT LIKE '%'||#search_keyword#||'%'
+					OR im_WRITER LIKE
+					'%'||#search_keyword#||'%'
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="TITLE">
+					im_TITLE
+					LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="CONTENT">
+					im_CONTENT
+					LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+				<isEqual property="search_keycode" compareValue="WRITER">
+					im_WRITER
+					LIKE '%'||#search_keyword#||'%'
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<select id="thumbList" resultMap="thumbResultMap" parameterClass="map">
+		SELECT B.*
+		FROM (
+		SELECT ROWNUM RNUM, A.*
+		FROM (
+		<include refid="selectAll" />
+		<include refid="searchCondition" />
+		ORDER BY IM_GROUP, IM_SEQ DESC ) A ) B
+			<![CDATA[ 
+    	    WHERE B.RNUM <= #startCount# 
+    	      AND B.RNUM >= #endCount#  
+   	 	  	]]>
+		ORDER BY RNUM DESC
+	</select>
+
+
+	<select id="thumbInfo" parameterClass="map" resultMap="thumbResultMap">
+		<include refid="selectAll" />
+		AND im_NO = #im_no#
+	</select>
+
+	<update id="updateHIT" parameterClass="map">
+		UPDATE IMAGEBOARD
+		SET im_HIT =
+		im_HIT + 1
+		WHERE im_NO = #im_no#
+	</update>
+
+	<insert id="insertThumb" parameterClass="thumbVO">
+		<selectKey keyProperty="im_no">
+			SELECT THUMB_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		insert into IMAGEBOARD(im_no, im_title, im_writer, im_content, im_reg_date, im_group)
+		values(#im_no#, #im_title#, #im_writer#, #im_content#, to_date(sysdate, 'YYYY-MM-DD'), #im_no#)
+	</insert>
+
+	<update id="updateThumb" parameterClass="thumbVO">
+		UPDATE IMAGEBOARD
+		SET im_TITLE
+		= #im_title#
+		,im_CONTENT = #im_content#
+		WHERE im_NO = #im_no#
+	</update>
+
+	<update id="deleteThumb" parameterClass="map">
+		UPDATE IMAGEBOARD
+		SET
+		im_DELETE = 'y'
+		WHERE im_NO = #im_no#
+	</update>
+
+	<select id="incrementSEQ" parameterClass="thumbVO" resultClass="string">
+		SELECT MAX(im_SEQ) + 1 FROM IMAGEBOARD WHERE im_GROUP = #im_group#
+	</select>
+
+	<update id="updateSEQ" parameterClass="thumbVO">
+		UPDATE IMAGEBOARD
+		SET im_SEQ =
+		im_SEQ + 1
+		WHERE im_GROUP = #im_group#
+		AND im_SEQ > #im_seq#
+	</update>
+
+	<select id="totalCount" parameterClass="map" resultClass="string">
+		SELECT COUNT(im_NO)
+		FROM IMAGEBOARD
+		WHERE im_DELETE = 'n'
+		<include refid="searchCondition" />
+	</select>
+	
+	<insert id="insertThumbReply" parameterClass="thumbVO">
+		<selectKey keyProperty="im_no">
+			select IMAGEBOARD_seq.nextval from dual
+		</selectKey>
+		insert into IMAGEBOARD(im_no, im_title, im_writer, im_content, im_reg_date, im_group, im_seq, im_depth)
+					values(#im_no#, #im_title#, #im_writer#, #im_content#, to_date(sysdate, 'YYYY-MM-DD'), #im_group#,
+			  				#im_seq#, #im_depth#)
+	</insert>
+
+</sqlMap>
+
+
+

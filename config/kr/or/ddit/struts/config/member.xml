@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	 <package name="memberPKG" extends="struts-default,tiles-default" namespace="/admin/member">
+	 	<action name="memberList" class="kr.or.ddit.admin.member.controller.MemberListAction">
+	 		<result type="tiles">admin/member/memberMgr</result>
+	 	</action>
+	 	<action name="memberDetail" class="kr.or.ddit.admin.member.controller.MemberDetailAction">
+	 		<result type="tiles">admin/member/memberDetail</result>
+	 	</action>
+	 	<action name="updateMember" class="kr.or.ddit.admin.member.controller.UpdateMemberAction">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirectAction">
+				<param name="namespace">/admin/member</param>
+				<param name="actionName">memberMgr</param>
+			</result>
+	 	</action>
+	 	<action name="memberMgr" class="kr.or.ddit.admin.member.controller.MemberMgrAction">
+	 		<result type="tiles">admin/member/memberMgr</result>
+	 	</action>
+	 	<action name="deleteMember" class="kr.or.ddit.admin.member.controller.DeleteMemberAction" method="deleteMemberInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/admin/member/memberMgr.do?message=${message}]]>
+			</result>
+		</action>
+	 </package>
+	 
+	 <package name="memberPKG2" extends="struts-default,tiles-default" namespace="/user/member">
+	 	<action name="memberForm">
+	 		<result type="tiles">user/member/memberForm</result>	 		
+	 	</action>
+	 	<action name="memberView" class="kr.or.ddit.user.member.controller.MemberViewAction">
+	 		<result type="tiles">user/member/memberView</result>	 		
+	 	</action>
+	 	<action name="memberDropout" class="kr.or.ddit.user.member.controller.MemberDroupoutAction">
+	 		<result type="tiles">user/member/memberDropout</result>	 		
+	 	</action>
+	 	<action name="insertMember" class="kr.or.ddit.user.member.controller.InsertMemberAction" method="insertMemberInfo">
+			<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/main.do?message=${message}]]>
+			</result>
+		</action>
+		<action name="idCheck" class="kr.or.ddit.user.member.controller.IdCheckAction">
+		</action>
+		<action name="updateMember" class="kr.or.ddit.user.member.controller.UpdateMemberAction">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+			<interceptor-ref name="params"></interceptor-ref>
+			<result type="redirect">
+				<![CDATA[/user/main.do?message=${message}]]>
+			</result>
+	 	</action>
+	 	<action name="outMember" class="kr.or.ddit.user.member.controller.OutMemberAction" method="outMemberInfo">
+	 		<interceptor-ref name="modelDriven"></interceptor-ref>
+	 		<interceptor-ref name="params"></interceptor-ref>
+	 		<result type="redirect">
+				<![CDATA[/user/main.do?message=${message}]]>
+			</result>
+	 	</action>
+	 </package>
+</struts>
